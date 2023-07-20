@@ -10,6 +10,7 @@ const useStyles = createUseStyles((theme: IPestelTheme) => ({
     width: 680,
     alignItems: "center",
     paddingTop: 50,
+    margin: "auto",
   },
   pestelHeader: {
     display: "flex",
