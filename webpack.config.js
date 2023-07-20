@@ -18,7 +18,8 @@ module.exports = (_, argv) => {
     output: {
       path: path.join(__dirname, "dist"),
       filename: "[name].js",
-      publicPath: argv.mode === "development" ? "http://localhost:3001/" : "/",
+      publicPath:
+        argv.mode === "development" ? "http://localhost:3001/" : "auto",
     },
 
     resolve: {
