@@ -66,7 +66,7 @@ const Pestel: React.FunctionComponent<IPestel> = (props: IPestel) => {
             <div className={styles.scoreRow} key={scoreIndex}>
               <span className={styles.text}>{score.text}</span>
               <div className={styles.dotsContainer}>
-                {Array.from(Array(10)).map((_, dotIndex) => {
+                {Array.from(Array(props.maxScore)).map((_, dotIndex) => {
                   return (
                     <div
                       key={dotIndex}
