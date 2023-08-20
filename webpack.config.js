@@ -1,6 +1,7 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
 const path = require("path");
+const webpack = require("webpack");
 
 const deps = require("./package.json").dependencies;
 module.exports = (_, argv) => {
@@ -55,6 +56,9 @@ module.exports = (_, argv) => {
     },
 
     plugins: [
+      new webpack.DefinePlugin({
+        "process.env": JSON.stringify(process.env),
+      }),
       new ModuleFederationPlugin({
         name: "pestel",
         filename: "remoteEntry.js",

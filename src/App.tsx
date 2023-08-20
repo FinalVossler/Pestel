@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 
 import Pestel from "./components/pestel";
 
@@ -26,12 +26,12 @@ const App = () => (
       confirmButtonText="Confirm"
       title="PESTEL Analysis"
       data={[
-        { score: 8, text: "Political" },
-        { score: 4, text: "Economic" },
-        { score: 10, text: "Social" },
-        { score: 6, text: "Technological" },
-        { score: 9, text: "Environmental" },
-        { score: 2, text: "Legal" },
+        { score: 0, text: "Political" },
+        { score: 0, text: "Economic" },
+        { score: 0, text: "Social" },
+        { score: 0, text: "Technological" },
+        { score: 0, text: "Environmental" },
+        { score: 0, text: "Legal" },
       ]}
       downloadReportButtonText="Download Report"
       maxScore={10}
@@ -42,4 +42,8 @@ const App = () => (
     />
   </div>
 );
-ReactDOM.render(<App />, document.getElementById("app"));
+
+const container = document.getElementById("app")!;
+const root = createRoot(container);
+
+root.render(<App />);

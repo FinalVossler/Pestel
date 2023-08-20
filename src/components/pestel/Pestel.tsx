@@ -1,6 +1,10 @@
 import React from "react";
 
 import useStyles from "./pestel.styles";
+import useGetPestel from "../../hooks/apiHooks/useGetPestel";
+import { IEntityFieldValue } from "../../globalTypes/IEntity";
+import useGetTranslatedText from "../../hooks/useGetTranslatedText";
+import Loading from "react-loading";
 
 interface IPestelScore {
   score: number;
@@ -34,6 +38,8 @@ export interface IPestel {
   onConfirm?: () => void;
   productText?: string;
   countryText?: string;
+  entityFieldValues?: IEntityFieldValue[];
+  language?: string;
 }
 
 const defaultProps: IPestel = {
@@ -72,7 +78,42 @@ const defaultProps: IPestel = {
 
 const Pestel: React.FunctionComponent<IPestel> = (passedProps: IPestel) => {
   const props: IPestel = { ...defaultProps, ...passedProps };
+
+  const [data, setData] = React.useState<IPestelScore[]>(props.data || []);
+  const [maxScore, setMaxScore] = React.useState<number>(props.maxScore || 10);
+
   const styles = useStyles({ theme: props.theme });
+  const { getPestel, loading: getPestelLoading } = useGetPestel();
+  const getTranslatedText = useGetTranslatedText(props.language || "fr");
+
+  React.useEffect(() => {
+    const country: string =
+      getTranslatedText(
+        props.entityFieldValues?.find(
+          (el) =>
+            getTranslatedText(el.field.name).toLowerCase() === "country" ||
+            getTranslatedText(el.field.name).toLowerCase() === "pays"
+        )?.value
+      ) || "France";
+
+    getPestel(country).then((pestelData) => {
+      const newData: IPestelScore[] = [];
+      Object.keys(pestelData).forEach((key) => {
+        //@ts-ignore
+        if (parseInt(pestelData[key] > 10)) {
+          setMaxScore(100);
+        }
+        const newPestelScore: IPestelScore = {
+          //@ts-ignore
+          score: pestelData[key],
+          text: key,
+        };
+        newData.push(newPestelScore);
+      });
+
+      setData(newData);
+    });
+  }, [props.entityFieldValues]);
 
   return (
     <div className={styles.pestelContainer}>
@@ -95,29 +136,33 @@ const Pestel: React.FunctionComponent<IPestel> = (passedProps: IPestel) => {
         <span className={styles.text}>{props.countryText}</span>
       </div>
 
-      <div className={styles.scoresContainer}>
-        {props.data?.map((score, scoreIndex) => {
-          return (
-            <div className={styles.scoreRow} key={scoreIndex}>
-              <span className={styles.text}>{score.text}</span>
-              <div className={styles.dotsContainer}>
-                {Array.from(Array(props.maxScore)).map((_, dotIndex) => {
-                  return (
-                    <div
-                      key={dotIndex}
-                      className={
-                        dotIndex + 1 <= score.score
-                          ? styles.selectedDot
-                          : styles.dot
-                      }
-                    ></div>
-                  );
-                })}
+      {getPestelLoading && <Loading color={props.theme?.dotColor} />}
+
+      {!getPestelLoading && (
+        <div className={styles.scoresContainer}>
+          {data?.map((score, scoreIndex) => {
+            return (
+              <div className={styles.scoreRow} key={scoreIndex}>
+                <span className={styles.text}>{score.text}</span>
+                <div className={styles.dotsContainer}>
+                  {Array.from(Array(maxScore)).map((_, dotIndex) => {
+                    return (
+                      <div
+                        key={dotIndex}
+                        className={
+                          dotIndex + 1 <= score.score
+                            ? styles.selectedDot
+                            : styles.dot
+                        }
+                      ></div>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
 
       <div className={styles.bottomButtonsContainer}>
         <button className={styles.cancelButton} onClick={props.onCancel}>
