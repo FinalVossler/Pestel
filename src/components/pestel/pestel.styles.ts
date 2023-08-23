@@ -11,6 +11,7 @@ const useStyles = createUseStyles((theme: IPestelTheme) => ({
     alignItems: "center",
     paddingTop: 50,
     margin: "auto",
+    marginBottom: 100,
   },
   pestelHeader: {
     display: "flex",
@@ -72,11 +73,11 @@ const useStyles = createUseStyles((theme: IPestelTheme) => ({
     justifyContent: "space-around",
     width: "100%",
   },
-  downloadReportButton: {
+  generatePdfButton: {
     extend: "pestelButton",
 
-    color: theme.downloadReportTextColor,
-    backgroundColor: theme.downloadReportButtonColor,
+    color: theme.generatePdfTextColor,
+    backgroundColor: theme.generatePdfButtonColor,
     fontWeight: 700,
   },
   scoresContainer: {
