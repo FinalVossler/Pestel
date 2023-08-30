@@ -117,13 +117,15 @@ const Pestel: React.FunctionComponent<IPestel> = (passedProps: IPestel) => {
     <React.Fragment>
       <div className={styles.pestelContainer}>
         <div className={styles.pestelHeader}>
-          <button
-            style={{ opacity: 0 }}
-            disabled
-            className={styles.generatePdfButton}
-          >
-            {props.generatePdfButtonText}
-          </button>
+          {!getPestelLoading && (
+            <button
+              style={{ opacity: 0 }}
+              disabled
+              className={styles.generatePdfButton}
+            >
+              {props.generatePdfButtonText}
+            </button>
+          )}
           <div className={styles.pestelTitle}>{props.title}</div>
           <button
             className={styles.generatePdfButton}
