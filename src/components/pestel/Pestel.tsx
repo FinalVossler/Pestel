@@ -152,7 +152,11 @@ const Pestel: React.FunctionComponent<IPestel> = (passedProps: IPestel) => {
         {!getPestelLoading &&
           data.some((el) => el.score > 0) &&
           generatePDFClicked && (
-            <PDFViewer height={700} width={1000} style={{ marginTop: 20 }}>
+            <PDFViewer
+              height={700}
+              width={1000}
+              style={{ marginTop: 20, maxWidth: "100%" }}
+            >
               <PestelPdf
                 theme={{
                   borderColor: props.theme?.borderColor || "#000000",
