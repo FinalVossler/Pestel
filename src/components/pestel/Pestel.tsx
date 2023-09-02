@@ -113,6 +113,18 @@ const Pestel: React.FunctionComponent<IPestel> = (passedProps: IPestel) => {
     });
   }, [props.entityFieldValues]);
 
+  const memoizedCountryText = React.useMemo(() => {
+    return (
+      getTranslatedText(
+        props.entityFieldValues?.find(
+          (el) =>
+            getTranslatedText(el.field.name).toLowerCase() === "country" ||
+            getTranslatedText(el.field.name).toLowerCase() === "pays"
+        )?.value
+      ) || props.countryText
+    );
+  }, [props.entityFieldValues, props.countryText]);
+
   return (
     <React.Fragment>
       <div className={styles.pestelContainer}>
@@ -151,14 +163,14 @@ const Pestel: React.FunctionComponent<IPestel> = (passedProps: IPestel) => {
                 title={props.title}
                 data={data}
                 productText={props.productText}
-                countryText={props.countryText}
+                countryText={memoizedCountryText}
               />
             </PDFViewer>
           )}
 
         <div className={styles.productAndCountryContainer}>
           <span className={styles.text}>{props.productText}</span>
-          <span className={styles.text}>{props.countryText}</span>
+          <span className={styles.text}>{memoizedCountryText}</span>
         </div>
 
         {getPestelLoading && <Loading color={props.theme?.dotColor} />}
