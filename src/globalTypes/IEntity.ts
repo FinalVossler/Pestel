@@ -113,7 +113,7 @@ export interface IField {
   updatedAt: string;
 }
 
-interface IFile {
+export interface IFile {
   _id?: string;
   url: string;
   uuid: string;
@@ -143,4 +143,170 @@ export interface IEntityFieldValue {
 
   tableValues?: IEntityTableFieldCaseValue[];
   yearTableValues?: IEntityYearTableFieldRowValues[];
+}
+
+export interface IEntity {
+  _id: string;
+  model: IModel;
+  entityFieldValues: IEntityFieldValue[];
+  assignedUsers?: IUser[];
+  customData?: string;
+
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface IModel {
+  _id: string;
+  name: ITranslatedText[];
+  modelFields: IModelField[];
+  modelEvents?: IEvent[];
+  states?: IModelState[];
+  subStates?: IModelState[];
+
+  createdAt: string;
+  updatedAt: string;
+}
+
+//#endregion model fields
+export interface IModelField {
+  field: IField;
+  required: boolean;
+  conditions?: IModelFieldCondition[];
+  states?: IModelState[];
+  mainField?: boolean;
+
+  // used for frontend sorting only
+  uuid: string;
+}
+
+export enum ModelFieldConditionTypeEnum {
+  SuperiorTo = "SuperiorTo",
+  SuperiorOrEqualTo = "SuperiorOrEqualTo",
+  InferiorTo = "InferiorTo",
+  InferiorOrEqualTo = "InferiorOrEqualTo",
+  Equal = "Equal",
+  ValueInferiorOrEqualToCurrentYearPlusValueOfFieldAndSuperiorOrEqualToCurrentYear = "ValueInferiorOrEqualToCurrentYearPlusValueOfFieldAndSuperiorOrEqualToCurrentYear",
+  StateConditionsMet = "StateConditionsMet",
+  IfYearTableThenNumberOfYearsInTheFutureIsEqualToValueOfField = "IfYearTableThenNumberOfYearsInTheFutureIsEqualToValueOfField",
+}
+
+export interface IModelFieldCondition {
+  field?: IField;
+  conditionType: ModelFieldConditionTypeEnum;
+  value?: number | string;
+  modelState?: IModelState;
+}
+//#endregion model fields
+
+//#region model states
+export enum ModelStateType {
+  ParentState = "ParentState",
+  SubState = "SubState",
+}
+
+export interface IModelState {
+  _id: string;
+  name: ITranslatedText[];
+  stateType: ModelStateType;
+  // Means that it will block entities from showing in other states
+  exlusive?: boolean;
+}
+
+export enum SuperRole {
+  SuperAdmin = "SuperAdmin",
+  Normal = "Normal",
+}
+
+export interface IUser {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  profilePicture?: IFile;
+  superRole: SuperRole;
+  role?: IRole;
+  hasMessagingEmailsActivated?: boolean;
+}
+
+export enum Permission {
+  EditConfiguration = "EditConfiguration",
+
+  CreatePage = "CreatePage",
+  ReadPage = "ReadPage",
+  UpdatePage = "UpdatePage",
+  DeletePage = "DeletePage",
+
+  CreatePost = "CreatePost",
+
+  CreateField = "CreateField",
+  ReadField = "ReadField",
+  UpdateField = "UpdateField",
+  DeleteField = "DeleteField",
+
+  CreateModel = "CreateModel",
+  ReadModel = "ReadModel",
+  UpdateModel = "UpdateModel",
+  DeleteModel = "DeleteModel",
+
+  CreateUser = "CreateUser",
+  ReadUser = "ReadUser",
+  UpdateUser = "UpdateUser",
+  DeleteUser = "DeleteUser",
+
+  CreateRole = "CreateRole",
+  ReadRole = "ReadRole",
+  UpdateRole = "UpdateRole",
+  DeleteRole = "DeleteRole",
+
+  ReadMicroFrontend = "ReadMicroFrontend",
+  CreateMicroFrontend = "CreateMicroFrontend",
+  UpdateMicroFrontend = "UpdateMicroFrontend",
+  DeleteMicroFrontend = "DeleteMicroFrontend",
+}
+
+export interface IRole {
+  _id: string;
+  name: ITranslatedText[];
+  permissions: Permission[];
+  entityPermissions: IEntityPermission[];
+
+  createdAt: string;
+  updatedAt: string;
+}
+
+export enum EntityEventNotificationTrigger {
+  OnCreate = "OnCreate",
+  OnAssigned = "OnAssigned",
+}
+
+export interface IEntityEventNotification {
+  _id?: string;
+  title: ITranslatedText[];
+  text: ITranslatedText[];
+  trigger: EntityEventNotificationTrigger;
+}
+
+export interface IFieldPermission {
+  field: IField;
+  permissions: StaticPermission[];
+}
+
+export enum StaticPermission {
+  Create = "Create",
+  Read = "Read",
+  Update = "Update",
+  Delete = "Delete",
+}
+
+export interface IEntityPermission {
+  _id?: string;
+  model: IModel;
+  permissions: StaticPermission[];
+  entityFieldPermissions: IFieldPermission[];
+  entityEventNotifications: IEntityEventNotification[];
+  entityUserAssignmentPermissionsByRole?: {
+    canAssignToUserFromSameRole: boolean;
+    otherRoles: IRole[];
+  };
 }

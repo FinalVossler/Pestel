@@ -1,8 +1,8 @@
 import { createUseStyles } from "react-jss";
 
-import { IPestelTheme } from "./Pestel";
+import { Theme } from "../../globalTypes/theme";
 
-const useStyles = createUseStyles((theme: IPestelTheme) => ({
+const useStyles = createUseStyles((theme: Theme) => ({
   pestelContainer: {
     display: "flex",
     flexDirection: "column",
@@ -35,7 +35,7 @@ const useStyles = createUseStyles((theme: IPestelTheme) => ({
     cursor: "pointer",
     transition: ".2s all ease-in-out",
     alignItems: "center",
-    boxShadow: theme.buttonBoxShadow,
+    boxShadow: theme.boxShadow,
 
     padding: 5,
   },
@@ -48,12 +48,12 @@ const useStyles = createUseStyles((theme: IPestelTheme) => ({
     paddingRight: 50,
     paddingLeft: 50,
 
-    color: theme.confirmButtonTextColor,
+    color: theme.lightTextColor,
     background:
       "linear-gradient(to right, " +
-      theme.confirmButtonLeftColor +
+      theme.primary +
       ", " +
-      theme.confirmButtonRightColor +
+      theme.darkerPrimary +
       ")",
   },
   cancelButton: {
@@ -62,8 +62,8 @@ const useStyles = createUseStyles((theme: IPestelTheme) => ({
     paddingRight: 50,
     paddingLeft: 50,
 
-    color: theme.cancelButtonTextColor,
-    backgroundColor: theme.cancelButtonColor,
+    color: theme.darkTextColor,
+    backgroundColor: theme.lightTextColor,
   },
   productAndCountryContainer: {
     display: "flex",
@@ -76,9 +76,15 @@ const useStyles = createUseStyles((theme: IPestelTheme) => ({
   generatePdfButton: {
     extend: "pestelButton",
 
-    color: theme.generatePdfTextColor,
-    backgroundColor: theme.generatePdfButtonColor,
+    color: theme.lightTextColor,
     fontWeight: 700,
+
+    background:
+      "linear-gradient(to right, " +
+      theme.primary +
+      ", " +
+      theme.darkerPrimary +
+      ")",
   },
   scoresContainer: {
     border: "1px dotted " + theme.borderColor,
@@ -101,7 +107,7 @@ const useStyles = createUseStyles((theme: IPestelTheme) => ({
   },
   text: {
     fontSize: 16,
-    color: theme.textColor,
+    color: theme.darkTextColor,
     fontWeight: 500,
   },
   dotsContainer: {
@@ -121,8 +127,8 @@ const useStyles = createUseStyles((theme: IPestelTheme) => ({
   },
   selectedDot: {
     extend: "dot",
-    backgroundColor: theme.dotColor,
-    borderColor: theme.dotColor,
+    backgroundColor: theme.primary,
+    borderColor: theme.primary,
   },
   bottomButtonsContainer: {
     display: "flex",

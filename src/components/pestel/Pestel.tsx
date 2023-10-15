@@ -1,35 +1,23 @@
 import React from "react";
 import { PDFViewer } from "@react-pdf/renderer";
 import Loading from "react-loading";
+import { AxiosInstance } from "axios";
 
 import useStyles from "./pestel.styles";
 import useGetPestel from "../../hooks/apiHooks/useGetPestel";
-import { IEntityFieldValue } from "../../globalTypes/IEntity";
+import { IEntity, IEntityFieldValue } from "../../globalTypes/IEntity";
 import useGetTranslatedText from "../../hooks/useGetTranslatedText";
 import PestelPdf from "./PestelPdf";
+import useSetEntityCustomDataKeyValue from "../../hooks/apiHooks/useSetEntityCustomDataKeyValue";
+import { Theme } from "../../globalTypes/theme";
 
 interface IPestelScore {
   score: number;
   text: string;
 }
 
-export interface IPestelTheme {
-  confirmButtonRightColor: string;
-  confirmButtonLeftColor: string;
-  confirmButtonTextColor: string;
-  cancelButtonColor: string;
-  cancelButtonTextColor: string;
-  generatePdfButtonColor: string;
-  generatePdfTextColor: string;
-  titleTextColor: string;
-  textColor: string;
-  dotColor: string;
-  borderColor: string;
-  buttonBoxShadow: string;
-}
-
 export interface IPestel {
-  theme?: IPestelTheme;
+  theme?: Theme;
   data?: IPestelScore[];
   title?: string;
   generatePdfButtonText?: string;
@@ -42,22 +30,29 @@ export interface IPestel {
   countryText?: string;
   entityFieldValues?: IEntityFieldValue[];
   language?: string;
+  authorizedAxios?: AxiosInstance;
+  entity?: IEntity;
+  buttonFieldId?: string;
 }
 
 const defaultProps: IPestel = {
   theme: {
-    borderColor: "#000000",
-    cancelButtonColor: "#FFFFFF",
-    cancelButtonTextColor: "#2C2B30",
-    confirmButtonLeftColor: "#2DB39E",
-    confirmButtonRightColor: "#4BE3AE",
-    confirmButtonTextColor: "#FFFFFF",
-    dotColor: "#3BCBB2",
-    generatePdfButtonColor: "#E59010",
-    generatePdfTextColor: "#FFFFFF",
-    textColor: "#2C2B30",
-    titleTextColor: "#2C2B30",
-    buttonBoxShadow: "0px 1px 4px rgba(0, 0, 0, 0.25)",
+    darkTextColor: "#4c4c4d",
+    lightTextColor: "#FFFFFF",
+
+    primary: "#4BE3AE",
+    darkerPrimary: "#2DB39E",
+    lighterPrimary: "#ecf2f0",
+    secondary: "#7aeaaf",
+    errorColor: "red",
+    borderColor: "#9f9f9f",
+    formMaxWidth: "470px",
+    transparentBackground: "#FFFFFF",
+    backgroundColor: "#F5FDFB",
+    contentBackgroundColor: "#d3f8eb",
+    subContentBackgroundColor: "#FFFFFF",
+    boxColor: "#FFFFFF",
+    boxShadow: "0px 1px 4px rgba(0, 0, 0, 0.25)",
   },
   cancelButtonText: "Back",
   confirmButtonText: "Confirm",
@@ -81,14 +76,25 @@ const defaultProps: IPestel = {
 const Pestel: React.FunctionComponent<IPestel> = (passedProps: IPestel) => {
   const props: IPestel = { ...defaultProps, ...passedProps };
 
+  //#region local state
   const [data, setData] = React.useState<IPestelScore[]>(props.data || []);
   const [generatePDFClicked, setGeneratePDFClicked] = React.useState(false);
+  //#endregion local state
 
+  //#region hooks
   const styles = useStyles({ theme: props.theme });
   const { getPestel, loading: getPestelLoading } = useGetPestel();
   const getTranslatedText = useGetTranslatedText(props.language || "fr");
+  const { loading: confirmationLoading, setEntityCustomDataKeyValue } =
+    useSetEntityCustomDataKeyValue();
+  //#endregion hooks
 
+  //#region effects
   React.useEffect(() => {
+    if (!props.entityFieldValues) {
+      return;
+    }
+
     const country: string =
       getTranslatedText(
         props.entityFieldValues?.find(
@@ -112,7 +118,27 @@ const Pestel: React.FunctionComponent<IPestel> = (passedProps: IPestel) => {
       setData(newData);
     });
   }, [props.entityFieldValues]);
+  //#endregion effects
 
+  //#region event listeners
+  const handleConfirm = () => {
+    if (props.onConfirm) {
+      props.onConfirm;
+    }
+    if (props.authorizedAxios && props.entity && props.buttonFieldId) {
+      setEntityCustomDataKeyValue(
+        {
+          entityId: props.entity?._id,
+          key: props.buttonFieldId,
+          value: true,
+        },
+        props.authorizedAxios
+      );
+    }
+  };
+  //#endregion event listeners
+
+  //#region view
   const memoizedCountryText = React.useMemo(() => {
     return (
       getTranslatedText(
@@ -137,11 +163,16 @@ const Pestel: React.FunctionComponent<IPestel> = (passedProps: IPestel) => {
     );
   }, [props.entityFieldValues, props.countryText]);
 
+  const loading = React.useMemo(
+    () => confirmationLoading || getPestelLoading,
+    [getPestelLoading, confirmationLoading]
+  );
+
   return (
     <React.Fragment>
       <div className={styles.pestelContainer}>
         <div className={styles.pestelHeader}>
-          {!getPestelLoading && (
+          {!loading && (
             <button
               style={{ opacity: 0 }}
               disabled
@@ -151,45 +182,45 @@ const Pestel: React.FunctionComponent<IPestel> = (passedProps: IPestel) => {
             </button>
           )}
           <div className={styles.pestelTitle}>{props.title}</div>
-          <button
-            className={styles.generatePdfButton}
-            onClick={() => setGeneratePDFClicked(!generatePDFClicked)}
-          >
-            {generatePDFClicked
-              ? props.hidePdfButtonText
-              : props.generatePdfButtonText}
-          </button>
+          {!loading && (
+            <button
+              className={styles.generatePdfButton}
+              onClick={() => setGeneratePDFClicked(!generatePDFClicked)}
+            >
+              {generatePDFClicked
+                ? props.hidePdfButtonText
+                : props.generatePdfButtonText}
+            </button>
+          )}
         </div>
 
-        {!getPestelLoading &&
-          data.some((el) => el.score > 0) &&
-          generatePDFClicked && (
-            <PDFViewer
-              height={700}
-              width={1000}
-              style={{ marginTop: 20, maxWidth: "100%" }}
-            >
-              <PestelPdf
-                theme={{
-                  borderColor: props.theme?.borderColor || "#000000",
-                  dotColor: props.theme?.dotColor || "#3BCBB2",
-                  textColor: props.theme?.textColor || "#2C2B30",
-                  titleTextColor: props.theme?.titleTextColor || "#2C2B30",
-                }}
-                title={props.title}
-                data={data}
-                productText={memoizedProductText}
-                countryText={memoizedCountryText}
-              />
-            </PDFViewer>
-          )}
+        {!loading && data.some((el) => el.score > 0) && generatePDFClicked && (
+          <PDFViewer
+            height={700}
+            width={1000}
+            style={{ marginTop: 20, maxWidth: "100%" }}
+          >
+            <PestelPdf
+              theme={{
+                borderColor: props.theme?.borderColor || "#000000",
+                primary: props.theme?.primary || "#3BCBB2",
+                textColor: props.theme?.darkTextColor || "#2C2B30",
+                titleTextColor: props.theme?.darkTextColor || "#2C2B30",
+              }}
+              title={props.title}
+              data={data}
+              productText={memoizedProductText}
+              countryText={memoizedCountryText}
+            />
+          </PDFViewer>
+        )}
 
         <div className={styles.productAndCountryContainer}>
           <span className={styles.text}>{memoizedProductText}</span>
           <span className={styles.text}>{memoizedCountryText}</span>
         </div>
 
-        {getPestelLoading && <Loading color={props.theme?.dotColor} />}
+        {loading && <Loading color={props.theme?.primary} />}
 
         {!getPestelLoading && (
           <div className={styles.scoresContainer}>
@@ -217,17 +248,20 @@ const Pestel: React.FunctionComponent<IPestel> = (passedProps: IPestel) => {
           </div>
         )}
 
-        <div className={styles.bottomButtonsContainer}>
-          <button className={styles.cancelButton} onClick={props.onCancel}>
-            {props.cancelButtonText}
-          </button>
-          <button className={styles.confirmButton} onClick={props.onConfirm}>
-            {props.confirmButtonText}
-          </button>
-        </div>
+        {!loading && (
+          <div className={styles.bottomButtonsContainer}>
+            <button className={styles.cancelButton} onClick={props.onCancel}>
+              {props.cancelButtonText}
+            </button>
+            <button className={styles.confirmButton} onClick={handleConfirm}>
+              {props.confirmButtonText}
+            </button>
+          </div>
+        )}
       </div>
     </React.Fragment>
   );
 };
+//#endregion view
 
 export default Pestel;

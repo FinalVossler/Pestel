@@ -10,7 +10,7 @@ interface IPestelScore {
 
 export interface IPestelTheme {
   borderColor: string;
-  dotColor: string;
+  primary: string;
   textColor: string;
   titleTextColor: string;
 }
@@ -28,7 +28,7 @@ export interface IPestel {
 const defaultProps: IPestel = {
   theme: {
     borderColor: "#000000",
-    dotColor: "#3BCBB2",
+    primary: "#3BCBB2",
     textColor: "#2C2B30",
     titleTextColor: "#2C2B30",
   },
@@ -119,8 +119,8 @@ const Pestel: React.FunctionComponent<IPestel> = (passedProps: IPestel) => {
       borderRadius: "50%",
       border: "2px solid #00000040",
       margin: "0px 17.5px",
-      backgroundColor: props.theme?.dotColor,
-      borderColor: props.theme?.dotColor,
+      backgroundColor: props.theme?.primary,
+      borderColor: props.theme?.primary,
     },
     bottomButtonsContainer: {
       display: "flex",
