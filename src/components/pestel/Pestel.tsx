@@ -91,10 +91,6 @@ const Pestel: React.FunctionComponent<IPestel> = (passedProps: IPestel) => {
 
   //#region effects
   React.useEffect(() => {
-    if (!props.entityFieldValues) {
-      return;
-    }
-
     const country: string =
       getTranslatedText(
         props.entityFieldValues?.find(
@@ -106,6 +102,7 @@ const Pestel: React.FunctionComponent<IPestel> = (passedProps: IPestel) => {
 
     getPestel(country).then((pestelData) => {
       const newData: IPestelScore[] = [];
+      console.log("pestelData", pestelData);
       Object.keys(pestelData).forEach((key) => {
         const newPestelScore: IPestelScore = {
           //@ts-ignore

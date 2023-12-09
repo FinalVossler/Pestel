@@ -9,18 +9,22 @@ const App = () => (
   <div className="container">
     <Pestel
       theme={{
-        borderColor: "#000000",
-        cancelButtonColor: "#FFFFFF",
-        cancelButtonTextColor: "#2C2B30",
+        darkTextColor: "#4c4c4d",
+        lightTextColor: "#FFFFFF",
+      
+        primary: "#4BE3AE",
         darkerPrimary: "#2DB39E",
-        confirmButtonRightColor: "#4BE3AE",
-        confirmButtonTextColor: "#FFFFFF",
-        primary: "#3BCBB2",
-        generatePdfButtonColor: "#E59010",
-        generatePdfTextColor: "#FFFFFF",
-        textColor: "#2C2B30",
-        titleTextColor: "#2C2B30",
-        buttonBoxShadow: "0px 1px 4px rgba(0, 0, 0, 0.25)",
+        lighterPrimary: "#ecf2f0",
+        secondary: "#7aeaaf",
+        errorColor: "red",
+        borderColor: "#9f9f9f",
+        formMaxWidth: "470px",
+        transparentBackground: "#FFFFFF",
+        backgroundColor: "#F5FDFB",
+        contentBackgroundColor: "#d3f8eb",
+        subContentBackgroundColor: "#FFFFFF",
+        boxColor: "#FFFFFF",
+        boxShadow: "0px 1px 4px rgba(0, 0, 0, 0.25)",
       }}
       cancelButtonText="Back"
       confirmButtonText="Confirm"
