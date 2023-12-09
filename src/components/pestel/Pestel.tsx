@@ -102,7 +102,6 @@ const Pestel: React.FunctionComponent<IPestel> = (passedProps: IPestel) => {
 
     getPestel(country).then((pestelData) => {
       const newData: IPestelScore[] = [];
-      console.log("pestelData", pestelData);
       Object.keys(pestelData).forEach((key) => {
         const newPestelScore: IPestelScore = {
           //@ts-ignore
