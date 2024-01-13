@@ -9,7 +9,7 @@ import { IEntity, IEntityFieldValue } from "../../globalTypes/IEntity";
 import useGetTranslatedText from "../../hooks/useGetTranslatedText";
 import PestelPdf from "./PestelPdf";
 import useSetEntityCustomDataKeyValue from "../../hooks/apiHooks/useSetEntityCustomDataKeyValue";
-import { Theme } from "../../globalTypes/theme";
+import { ITheme } from "../../globalTypes/theme";
 
 interface IPestelScore {
   score: number;
@@ -17,7 +17,7 @@ interface IPestelScore {
 }
 
 export interface IPestel {
-  theme?: Theme;
+  theme?: ITheme;
   data?: IPestelScore[];
   title?: string;
   generatePdfButtonText?: string;

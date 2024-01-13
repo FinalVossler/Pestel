@@ -1,8 +1,8 @@
 import { createUseStyles } from "react-jss";
 
-import { Theme } from "../../globalTypes/theme";
+import { ITheme } from "../../globalTypes/theme";
 
-const useStyles = createUseStyles((theme: Theme) => ({
+const useStyles = createUseStyles((theme: ITheme) => ({
   pestelContainer: {
     display: "flex",
     flexDirection: "column",
