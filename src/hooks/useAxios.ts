@@ -1,7 +1,6 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-
-import ErrorResponseDto from "../globalTypes/ErrorResponseDto";
+import { IErrorResponse } from "roottypes";
 
 const useAxios = () => {
   const instance = axios.create({
@@ -12,7 +11,7 @@ const useAxios = () => {
     (response) => {
       return response;
     },
-    (error: ErrorResponseDto) => {
+    (error: IErrorResponse) => {
       const message: string = error.response.data.error.message;
 
       toast.error(message);

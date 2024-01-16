@@ -1,14 +1,14 @@
 import React from "react";
 
-import { IEntityFieldValue } from "../../globalTypes/IEntity";
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import { IEntityFieldValueReadDto } from "roottypes";
 
 interface IPestelScore {
   score: number;
   text: string;
 }
 
-export interface IPestelTheme {
+export interface IPestelPdfTheme {
   borderColor: string;
   primary: string;
   textColor: string;
@@ -16,12 +16,12 @@ export interface IPestelTheme {
 }
 
 export interface IPestel {
-  theme?: IPestelTheme;
+  theme?: IPestelPdfTheme;
   data?: IPestelScore[];
   title?: string;
   productText?: string;
   countryText?: string;
-  entityFieldValues?: IEntityFieldValue[];
+  entityFieldValues?: IEntityFieldValueReadDto[];
   language?: string;
 }
 

@@ -1,4 +1,4 @@
-export interface ITheme {
+export interface IPestelTheme {
   darkTextColor: string;
   lightTextColor: string;
   primary: string;
@@ -16,7 +16,7 @@ export interface ITheme {
   boxShadow: string;
 }
 
-const theme: ITheme = {
+const theme: IPestelTheme = {
   darkTextColor: "#4c4c4d",
   lightTextColor: "#FFFFFF",
 

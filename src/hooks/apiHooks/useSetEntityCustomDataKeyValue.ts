@@ -1,19 +1,13 @@
 import React from "react";
 import { AxiosInstance, AxiosResponse } from "axios";
-
 import { toast } from "react-toastify";
-
-export type EntitiesSetCustomDataKeyValueCommand = {
-  entityId: string;
-  key: string;
-  value: boolean;
-};
+import { IEntitiesSetCustomDataKeyValueCommand } from "roottypes";
 
 const useSetEntityCustomDataKeyValue = () => {
   const [loading, setLoading] = React.useState(false);
 
   const setEntityCustomDataKeyValue = (
-    command: EntitiesSetCustomDataKeyValueCommand,
+    command: IEntitiesSetCustomDataKeyValueCommand,
     authorizedAxios?: AxiosInstance
   ) =>
     new Promise<void>(async (resolve, reject) => {

@@ -1,4 +1,4 @@
-import { ITranslatedText } from "../globalTypes/IEntity";
+import { ITranslatedText } from "roottypes";
 
 const getTranslatedText =
   (userPreferenceLanguage: string) =>

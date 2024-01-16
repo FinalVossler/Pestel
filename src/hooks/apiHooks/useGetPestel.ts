@@ -3,19 +3,19 @@ import useAxios from "../useAxios";
 import { AxiosResponse } from "axios";
 import { getLocalStorage, setLocalStorage } from "../../utils/localStorage";
 
-type PestelData = {
+interface IPestelData {
   Political: number;
   Economic: number;
   Social: number;
   Technological: number;
   Environmental: number;
   Legal: number;
-};
+}
 
-type PestelResponse = {
+interface IPestelResponse {
   contry: string;
-  PESTEL: PestelData;
-};
+  PESTEL: IPestelData;
+}
 
 const LOCAL_STORAGE_KEY = "pestelData";
 
@@ -25,8 +25,8 @@ const useGetPestel = () => {
   const axios = useAxios();
 
   const getPestel = (country: string) =>
-    new Promise<PestelData>(async (resolve, reject) => {
-      const dataInLocalStorage: PestelData = getLocalStorage({
+    new Promise<IPestelData>(async (resolve, reject) => {
+      const dataInLocalStorage: IPestelData = getLocalStorage({
         dataKey: LOCAL_STORAGE_KEY + country,
       });
       if (dataInLocalStorage) {
@@ -37,7 +37,7 @@ const useGetPestel = () => {
       if (country) {
         setLoading(true);
         axios
-          .request<AxiosResponse<PestelResponse>>({
+          .request<AxiosResponse<IPestelResponse>>({
             url: "/chatGPT/",
             params: {
               country,
@@ -45,7 +45,7 @@ const useGetPestel = () => {
             method: "GET",
           })
           .then((res) => {
-            const pestelData: PestelData =
+            const pestelData: IPestelData =
               res.data.data.PESTEL || res.data.data;
             if (pestelData) {
               resolve(pestelData);

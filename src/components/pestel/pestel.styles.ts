@@ -1,8 +1,7 @@
 import { createUseStyles } from "react-jss";
+import { IPestelTheme } from "../../globalTypes/theme";
 
-import { ITheme } from "../../globalTypes/theme";
-
-const useStyles = createUseStyles((theme: ITheme) => ({
+const useStyles = createUseStyles((theme: IPestelTheme) => ({
   pestelContainer: {
     display: "flex",
     flexDirection: "column",
@@ -132,7 +131,7 @@ const useStyles = createUseStyles((theme: ITheme) => ({
   },
   bottomButtonsContainer: {
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     width: "100%",
   },
 }));

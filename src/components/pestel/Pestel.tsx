@@ -5,11 +5,15 @@ import { AxiosInstance } from "axios";
 
 import useStyles from "./pestel.styles";
 import useGetPestel from "../../hooks/apiHooks/useGetPestel";
-import { IEntity, IEntityFieldValue } from "../../globalTypes/IEntity";
 import useGetTranslatedText from "../../hooks/useGetTranslatedText";
 import PestelPdf from "./PestelPdf";
 import useSetEntityCustomDataKeyValue from "../../hooks/apiHooks/useSetEntityCustomDataKeyValue";
-import { ITheme } from "../../globalTypes/theme";
+import {
+  IEntityFieldValueReadDto,
+  IEntityReadDto,
+  IFieldReadDto,
+} from "roottypes";
+import { IPestelTheme } from "../../globalTypes/theme";
 
 interface IPestelScore {
   score: number;
@@ -17,7 +21,7 @@ interface IPestelScore {
 }
 
 export interface IPestel {
-  theme?: ITheme;
+  theme?: IPestelTheme;
   data?: IPestelScore[];
   title?: string;
   generatePdfButtonText?: string;
@@ -28,10 +32,11 @@ export interface IPestel {
   onConfirm?: () => void;
   productText?: string;
   countryText?: string;
-  entityFieldValues?: IEntityFieldValue[];
+  backText?: string;
+  entityFieldValues?: IEntityFieldValueReadDto[];
   language?: string;
   authorizedAxios?: AxiosInstance;
-  entity?: IEntity;
+  entity?: IEntityReadDto;
   buttonFieldId?: string;
 }
 
@@ -67,6 +72,7 @@ const defaultProps: IPestel = {
   ],
   generatePdfButtonText: "Generate PDF",
   hidePdfButtonText: "Hide PDF",
+  backText: "Back",
   onCancel: () => {},
   onConfirm: () => {},
   productText: "Product Name: Product A",
@@ -95,8 +101,12 @@ const Pestel: React.FunctionComponent<IPestel> = (passedProps: IPestel) => {
       getTranslatedText(
         props.entityFieldValues?.find(
           (el) =>
-            getTranslatedText(el.field.name).toLowerCase() === "country" ||
-            getTranslatedText(el.field.name).toLowerCase() === "pays"
+            getTranslatedText(
+              (el.field as IFieldReadDto).name
+            ).toLowerCase() === "country" ||
+            getTranslatedText(
+              (el.field as IFieldReadDto).name
+            ).toLowerCase() === "pays"
         )?.value
       ) || "France";
 
@@ -140,8 +150,12 @@ const Pestel: React.FunctionComponent<IPestel> = (passedProps: IPestel) => {
       getTranslatedText(
         props.entityFieldValues?.find(
           (el) =>
-            getTranslatedText(el.field.name).toLowerCase() === "country" ||
-            getTranslatedText(el.field.name).toLowerCase() === "pays"
+            getTranslatedText(
+              (el.field as IFieldReadDto).name
+            ).toLowerCase() === "country" ||
+            getTranslatedText(
+              (el.field as IFieldReadDto).name
+            ).toLowerCase() === "pays"
         )?.value
       ) || props.countryText
     );
@@ -152,8 +166,9 @@ const Pestel: React.FunctionComponent<IPestel> = (passedProps: IPestel) => {
       getTranslatedText(
         props.entityFieldValues?.find(
           (el) =>
-            getTranslatedText(el.field.name).toLowerCase().indexOf("name") !==
-            -1
+            getTranslatedText((el.field as IFieldReadDto).name)
+              .toLowerCase()
+              .indexOf("name") !== -1
         )?.value
       ) || props.productText
     );
@@ -169,12 +184,8 @@ const Pestel: React.FunctionComponent<IPestel> = (passedProps: IPestel) => {
       <div className={styles.pestelContainer}>
         <div className={styles.pestelHeader}>
           {!loading && (
-            <button
-              style={{ opacity: 0 }}
-              disabled
-              className={styles.generatePdfButton}
-            >
-              {props.generatePdfButtonText}
+            <button className={styles.cancelButton} onClick={props.onCancel}>
+              {props.cancelButtonText}
             </button>
           )}
           <div className={styles.pestelTitle}>{props.title}</div>
@@ -246,9 +257,6 @@ const Pestel: React.FunctionComponent<IPestel> = (passedProps: IPestel) => {
 
         {!loading && (
           <div className={styles.bottomButtonsContainer}>
-            <button className={styles.cancelButton} onClick={props.onCancel}>
-              {props.cancelButtonText}
-            </button>
             <button className={styles.confirmButton} onClick={handleConfirm}>
               {props.confirmButtonText}
             </button>
